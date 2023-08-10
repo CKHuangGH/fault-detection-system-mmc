@@ -11,22 +11,32 @@ import (
 	"k8s.io/client-go/rest"
 )
 
+func getNamespace() string {
+	// 獲取 Pod 的命名空間（該信息在 Pod 中的環境變數中）
+	namespace := os.Getenv("NAMESPACE")
+	if namespace == "" {
+		// 如果未能獲取到命名空間，則預設為 "default"
+		namespace = "default"
+	}
+	return namespace
+}
+
 func main() {
-	// 使用 InClusterConfig() 函數建立集群內部的配置
 	config, err := rest.InClusterConfig()
 	if err != nil {
 		log.Fatalf("Error creating in-cluster config: %v", err)
 	}
 
-	// 建立 Kubernetes 客戶端
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
 		log.Fatalf("Error creating Kubernetes client: %v", err)
 	}
 
-	podNamespace := os.Getenv("POD_NAMESPACE")
+	namespace := getNamespace()
 
-	pods, err := clientset.CoreV1().Pods(podNamespace).List(context.TODO(), metav1.ListOptions{})
+	fmt.Printf("Listing Pods in namespace: %s\n", namespace)
+
+	pods, err := clientset.CoreV1().Pods(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		log.Fatalf("Error listing Pods: %v", err)
 	}

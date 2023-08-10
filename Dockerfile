@@ -10,7 +10,7 @@ RUN go mod download
 
 RUN go build -o myapp
 
-FROM golang:1.20 AS runner
+FROM alpine
 
 WORKDIR /app
 
