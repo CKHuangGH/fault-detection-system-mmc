@@ -1,17 +1,21 @@
 FROM golang:1.20 AS builder
 
+RUN mkdir -p /app
+
 WORKDIR /app
 
 COPY fault_detection.go go.mod go.sum .
 
-RUN go mod vendor
+RUN go mod download
 
-RUN go build -mod vendor -o myapp fault_detection.go
+RUN go build -o app
 
 FROM alpine
 
-WORKDIR /
+RUN mkdir -p /app
 
-COPY --from=builder /app/myapp .
+COPY --from=builder /app/myapp /app
 
-CMD ["./myapp"]
+WORKDIR /app 
+
+ENTRYPOINT ["./myapp"]
