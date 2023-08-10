@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fault-detection
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fault-detection
+  template:
+    metadata:
+      name: fault-detection
+      labels:
+        app: fault-detection
+    spec:
+      serviceAccountName: test
+      containers:
+      - name: fault-detection
+        image: chuangtw/faultdetection:latest
