@@ -12,8 +12,8 @@ RUN go build -o myapp
 
 FROM alpine
 
-WORKDIR /app
+WORKDIR /
 
 COPY --from=builder /app/myapp .
 
-CMD ["./myapp"]
+ENTRYPOINT ["/myapp"]
