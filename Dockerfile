@@ -32,8 +32,4 @@ FROM alpine:latest
 WORKDIR /app
 COPY --from=build /app/main .
 
-# 刪除不必要的依賴
-RUN apk --no-cache add ca-certificates
-RUN apk del .build-deps
-
 CMD ["./main"]
