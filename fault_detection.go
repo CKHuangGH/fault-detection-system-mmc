@@ -9,16 +9,16 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
+	"k8s.io/klog/v2"
 )
 
-func getNamespace() string {
-	// 獲取 Pod 的命名空間（該信息在 Pod 中的環境變數中）
-	namespace := os.Getenv("NAMESPACE")
-	if namespace == "" {
-		// 如果未能獲取到命名空間，則預設為 "default"
-		namespace = "default"
+func detectNamespace() (string, error) {
+	namespacePath := "/var/run/secrets/kubernetes.io/serviceaccount/namespace"
+	nsBytes, err := os.ReadFile(namespacePath)
+	if err != nil {
+		return "", err
 	}
-	return namespace
+	return string(nsBytes), nil
 }
 
 func main() {
@@ -32,9 +32,12 @@ func main() {
 		log.Fatalf("Error creating Kubernetes client: %v", err)
 	}
 
-	namespace := getNamespace()
+	namespace, err := detectNamespace()
+	if err != nil {
+		klog.Fatalf("Error detecting namespace: %v", err)
+	}
 
-	fmt.Printf("Listing Pods in namespace: %s\n", namespace)
+	fmt.Printf("Current Pod's namespace: %s\n", namespace)
 
 	pods, err := clientset.CoreV1().Pods(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
