@@ -25,9 +25,8 @@ func main() {
 	}
 
 	podNamespace := os.Getenv("POD_NAMESPACE")
-	podName := os.Getenv("POD_NAME")
 
-	pods, err := clientset.CoreV1().Pods("").List(context.TODO(), metav1.ListOptions{})
+	pods, err := clientset.CoreV1().Pods(podNamespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		log.Fatalf("Error listing Pods: %v", err)
 	}
