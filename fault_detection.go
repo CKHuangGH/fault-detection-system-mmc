@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
@@ -23,10 +24,9 @@ func main() {
 		log.Fatalf("Error creating Kubernetes client: %v", err)
 	}
 
-	// 在這裡您可以使用 clientset 進行各種 Kubernetes 操作
-	// 例如列出 Pods，創建 Deployments，查詢 Services 等
+	podNamespace := os.Getenv("POD_NAMESPACE")
+	podName := os.Getenv("POD_NAME")
 
-	// 這裡是一個簡單的示例，列出集群中的 Pods
 	pods, err := clientset.CoreV1().Pods("").List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		log.Fatalf("Error listing Pods: %v", err)
