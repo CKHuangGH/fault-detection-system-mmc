@@ -39,7 +39,9 @@ func main() {
 
 	fmt.Printf("Current Pod's namespace: %s\n", namespace)
 
-	pods, err := clientset.CoreV1().Pods(namespace).List(context.TODO(), metav1.ListOptions{})
+	pods, err := clientset.CoreV1().Pods(namespace).List(context.TODO(), metav1.ListOptions{
+		LabelSelector: "app=vcluster",
+	})
 	if err != nil {
 		log.Fatalf("Error listing Pods: %v", err)
 	}
