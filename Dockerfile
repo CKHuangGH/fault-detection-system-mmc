@@ -8,14 +8,12 @@ COPY fault_detection.go go.mod go.sum .
 
 RUN go mod download
 
-RUN go build -o myapp
+RUN go build -o /myapp
 
 FROM alpine
 
-RUN mkdir -p /app
+WORKDIR /
 
-COPY --from=builder /app/myapp /app/myapp
+COPY --from=builder /myapp .
 
-WORKDIR /app 
-
-ENTRYPOINT ["./myapp"]
+ENTRYPOINT ["/myapp"]
