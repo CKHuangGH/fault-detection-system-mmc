@@ -14,4 +14,4 @@ WORKDIR /
 
 COPY --from=builder /myapp .
 
-ENTRYPOINT ["/myapp"]
+ENTRYPOINT ["./myapp"]
